@@ -14,16 +14,16 @@ def make_coffee(customer_name):
     print(f"{ctime()} | [PID: {pid}] [TID: {thread_id}] [Thread Name: {thread_name}] ลูกค้า {customer_name}: ได้รับกาแฟแล้ว!")
 
 def main():
-    # คิวลูกค้า
     queue = ['A', 'B', 'C']
     main_pid = os.getpid()
     main_tid = threading.current_thread().native_id
 
     print(f"{ctime()} | [Main PID: {main_pid}] [Main TID: {main_tid}] === เริ่มระบบจำลองร้านกาแฟแบบ Multi-Thread ===")
     start_time = time()
+
     threads = []
 
-    # สร้างการทำงาน Thread
+    # ลูปการทำงาน Thread
     for customer in queue:
         # เราสามารถตั้งชื่อ Thread ผ่านพารามิเตอร์ name= ได้เพื่อให้ได้โค้ดง่ายขึ้น
         t = threading.Thread(
@@ -33,6 +33,7 @@ def main():
         )
         threads.append(t)
         t.start()
+        
     for t in threads:
         t.join()
 
