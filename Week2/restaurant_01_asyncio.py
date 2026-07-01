@@ -1,56 +1,41 @@
+from time import time, ctime
 import asyncio
-from time import ctime, time
-import time as t
 
-# 1. Front desk greeting process
-def greet_diners(customer):
+async def greet_diners(customer):
     print(f"{ctime()} Greeting for Customer-{customer} ...")
-    t.sleep(1)
+    await asyncio.sleep(1)  # Simulating a time-consuming task
     print(f"{ctime()} Greeting for Customer-{customer} ...Done!")
 
-# 2. Individual customer workflow
 async def customer_private_workflow(customer):
-
-    print(f"{ctime()} [Async-{customer}] Taking Order ...")
-    await asyncio.sleep(1)
-    print(f"{ctime()} [Async-{customer}] Taking Order ...Done!")
-
-    print(f"{ctime()} [Async-{customer}] Cooking Spaghetti ...")
-    await asyncio.sleep(1)
-    print(f"{ctime()} [Async-{customer}] Cooking Spaghetti ...Done!")
-
-    print(f"{ctime()} [Async-{customer}] Manage Bar for Drinks ...")
-    await asyncio.sleep(1)
-    print(f"{ctime()} [Async-{customer}] Manage Bar for Drinks ...Done!")
-
-    print(f"{ctime()} [Async-{customer}] All served!")
+    # take_order(customer):
+    print(f"{ctime()}   [Task-{customer}] Taking Order ...")
+    await asyncio.sleep(1)  # Simulating a time-consuming task
+    print(f"{ctime()}   [Task-{customer}] Taking Order ...Done!")
+    # do_cooking(customer):
+    print(f"{ctime()}   [Task-{customer}] Cooking spaghetti ...")
+    await asyncio.sleep(1)  # Simulating a time-consuming task
+    print(f"{ctime()}   [Task-{customer}] Cooking spaghetti ...Done!")
+    # mini_bar(customer):
+    print(f"{ctime()}   [Task-{customer}] Manage Bar for Drink ...")
+    await asyncio.sleep(1)  # Simulating a time-consuming task
+    print(f"{ctime()}   [Task-{customer}] Manage Bar for Drink ...Done!")
+    print(f"{ctime()}   [Task-{customer}] All served!\n")
 
 async def main():
-
-    customers = ['A', 'B', 'C']
-
+    customers = ["A", "B", "C"]  # List of customers to serve
     start_time = time()
 
-    # PHASE 1 : Greeting
     for customer in customers:
-        greet_diners(customer)
+        await greet_diners(customer)
 
-    print(f"\n{ctime()} All customers greeted. Splitting into async tasks...\n")
+    print(f"\n{ctime()} --- All Customers greeted. Splitting into individual tasks ---\n")
 
-    tasks = []
-
-    for customer in customers:
-        tasks.append(
-            asyncio.create_task(
-                customer_private_workflow(customer)
-            )
-        )
-
+    # สร้าง task ทั้งหมดแล้วปล่อยให้รันพร้อมกันบน event loop เดียว
+    tasks = [customer_private_workflow(customer) for customer in customers]
     await asyncio.gather(*tasks)
 
     duration = time() - start_time
-
-    print(f"\n{ctime()} Finished Entire Restaurant Operation "f"in {duration:.2f} seconds.")
+    print(f"{ctime()} Finished Cooking in {duration:.2f} seconds")
 
 if __name__ == "__main__":
     asyncio.run(main())
